@@ -31,7 +31,8 @@ jobs:
             jettons/*.yaml
 
       - name: Debug changed files
-        run: echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
+        run:  | 
+          echo "Changed files: ${{ steps.changed-files.outputs.all_changed_files }}"
 
       - name: Run verification
         if: steps.changed-files.outputs.all_changed_files != ''
