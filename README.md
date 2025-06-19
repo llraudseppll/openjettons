@@ -11,13 +11,13 @@ OpenJettons — это открытый реестр jetton'ов в блокче
 
 Создайте YAML-файл:
 
-В директории jettons/ создайте файл, например, TruckCoin.yaml:address: EQCzGUyJocAlZcZmIcQniLaP4X7nepnXM8QAaQSmbISZEtvF
-name: TruckCoin
-symbol: TRCK
+В директории jettons/ создайте файл, например, YouCoin.yaml:address: EQCz................................
+name: YouCoin
+symbol: YOC
 decimals: 9
-image: https://truckcoin.example.com/logo.png
+image: https://youcoin.example.com/logo.png
 description: A token for the TruckCoin project
-website: https://truckcoin.example.com
+website: https://youcoin.example.com
 
 
 Убедитесь, что address — это валидный мастер-контракт jetton'а (TEP-74), проверенный на tonviewer.com.
@@ -28,7 +28,7 @@ website: https://truckcoin.example.com
 Установите зависимости:pip install requests pyyaml
 
 
-Запустите проверку:python scripts/verify_jetton.py jettons/TruckCoin.yaml
+Запустите проверку:python scripts/verify_jetton.py jettons/YouCoin.yaml
 
 
 Если валидация прошла, скрипт выведет:Jetton at <address> validated successfully!
@@ -43,8 +43,8 @@ Generated jettons.json
 cd openjettons
 
 
-Добавьте ваш YAML-файл:git add jettons/TruckCoin.yaml
-git commit -m "Добавлен TruckCoin.yaml"
+Добавьте ваш YAML-файл:git add jettons/YouCoin.yaml
+git commit -m "Добавлен YouCoin.yaml"
 git push origin main
 
 
@@ -59,7 +59,7 @@ git push origin main
 
 Структура репозитория
 
-jettons/: Директория с YAML-файлами jetton'ов (например, TruckCoin.yaml).
+jettons/: Директория с YAML-файлами jetton'ов (например, YouCoin.yaml).
 scripts/verify_jetton.py: Скрипт для проверки jetton'ов через TON Center API.
 jettons.json: Сгенерированный список валидных jetton'ов.
 .github/workflows/verify-jettons.yml: Workflow для автоматической проверки в GitHub Actions.
