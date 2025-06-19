@@ -3,30 +3,85 @@ import requests
 import yaml
 import sys
 import os
+import base64
 from urllib.parse import quote
+from tonsdk.utils import b64_to_bytes, bytes_to_dict  # Для парсинга Cell
 
-# Tonscan API endpoint
-TONSCAN_API = "https://tonscan.org/api/v1"
+# TON Center API endpoint
+TONCENTER_API = "https://toncenter.com/api/v2"
 
 def get_jetton_data(address):
-    """Fetch jetton data from tonscan API."""
+    """Fetch jetton data from TON Center API."""
     try:
-        encoded_address = quote(address)
-        url = f"{TONSCAN_API}/jetton/{encoded_address}"
-        response = requests.get(url)
+        url = f"{TONCENTER_API}/runGetMethod"
+        payload = {
+            "address": address,
+            "method": "get_jetton_data",
+            "stack": []
+        }
+        response = requests.post(url, json=payload, timeout=10)
+        print(f"HTTP Status Code: {response.status_code}")
+        print(f"Response Text: {response.text[:200]}")
         response.raise_for_status()
         data = response.json()
-        if data.get("status") == "ok" and data.get("data"):
-            return data["data"]
-        else:
-            print(f"Error: No valid jetton data for address {address}")
+
+        if not data.get("ok"):
+            print(f"Error: API request failed for address {address}: {data.get('error')}")
             return None
+
+        # Парсинг результата get_jetton_data
+        # Результат: [total_supply, mintable, admin_address, jetton_content, jetton_wallet_code]
+        result = data["result"]["stack"]
+        if len(result) < 4:
+            print(f"Error: Invalid jetton data structure for {address}")
+            return None
+
+        # Извлечение jetton_content (метаданные)
+        jetton_content = result[3]
+        if jetton_content["type"] != "slice":
+            print(f"Error: Jetton content is not a slice for {address}")
+            return None
+
+        # Парсинг метаданных из Cell
+        content_bytes = b64_to_bytes(jetton_content["value"])
+        try:
+            content_dict = bytes_to_dict(content_bytes)
+        except Exception as e:
+            print(f"Error parsing jetton content for {address}: {e}")
+            return None
+
+        # Извлечение name, symbol, decimals
+        metadata = content_dict.get("content", {})
+        name = metadata.get("name", "")
+        symbol = metadata.get("symbol", "")
+        decimals = int(metadata.get("decimals", 0)) if metadata.get("decimals") else 0
+
+        if not name or not symbol:
+            print(f"Error: Missing name or symbol in metadata for {address}")
+            return None
+
+        # Формируем данные в формате, совместимом с валидацией
+        jetton_data = {
+            "address": address,
+            "name": name,
+            "symbol": symbol,
+            "decimals": decimals,
+            "isJetton": True  # Предполагаем, что контракт jetton, если метод успешен
+        }
+        return jetton_data
+
+    except requests.HTTPError as e:
+        print(f"HTTP Error for {address}: {e}")
+        return None
     except requests.RequestException as e:
-        print(f"Error fetching data for {address}: {e}")
+        print(f"Request Error for {address}: {e}")
+        return None
+    except ValueError as e:
+        print(f"JSON Decode Error for {address}: {e}")
         return None
 
 def validate_jetton(jetton_yaml, jetton_data):
-    """Validate jetton YAML against tonscan data."""
+    """Validate jetton YAML against TON Center data."""
     if not jetton_data:
         return False
     
