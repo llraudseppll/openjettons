@@ -1,5 +1,4 @@
- name: Verify Jettons
-
+name: Verify Jettons
 on:
   push:
     branches:
