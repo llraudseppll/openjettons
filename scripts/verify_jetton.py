@@ -63,7 +63,7 @@ def validate_jetton(jetton_yaml, jetton_data):
 def verify_files(files):
     """Verify specified jetton YAML files."""
     all_valid = True
-    valid_jettons = []  # Сохраняем валидные jetton'ы
+    valid_jettons = []
     print(f"Processing files: {files}")
     for file in files:
         if not file.startswith("jettons/") or not file.endswith(".yaml"):
@@ -92,11 +92,37 @@ def verify_files(files):
     return all_valid, valid_jettons
 
 def generate_jettons_json(valid_jettons):
-    """Generate jettons.json from valid jettons."""
-    print(f"Generating jettons.json with {len(valid_jettons)} valid jettons")
-    with open("jettons.json", "w") as f:
-        json.dump(valid_jettons, f, indent=2)
-    print("Generated jettons.json")
+    """Generate jettons.json, appending new valid jettons."""
+    # Читаем существующий jettons.json, если он есть
+    existing_jettons = []
+    jettons_json_path = "jettons.json"
+    if os.path.exists(jettons_json_path):
+        try:
+            with open(jettons_json_path, "r") as f:
+                existing_jettons = json.load(f)
+                if not isinstance(existing_jettons, list):
+                    print("Error: jettons.json is not a valid list, resetting to empty")
+                    existing_jettons = []
+        except json.JSONDecodeError as e:
+            print(f"Error: Failed to parse jettons.json: {e}, resetting to empty")
+            existing_jettons = []
+
+    # Создаём множество адресов существующих токенов для избежания дубликатов
+    existing_addresses = {jetton["address"] for jetton in existing_jettons}
+    
+    # Добавляем новые токены, если их ещё нет
+    for jetton in valid_jettons:
+        if jetton["address"] not in existing_addresses:
+            existing_jettons.append(jetton)
+            existing_addresses.add(jetton["address"])
+            print(f"Added jetton {jetton['address']} to jettons.json")
+        else:
+            print(f"Skipping duplicate jetton {jetton['address']}")
+
+    # Записываем обновлённый список в jettons.json
+    with open(jettons_json_path, "w") as f:
+        json.dump(existing_jettons, f, indent=2)
+    print(f"Generated jettons.json with {len(existing_jettons)} jettons")
 
 if __name__ == "__main__":
     files = sys.argv[1:] if len(sys.argv) > 1 else []
