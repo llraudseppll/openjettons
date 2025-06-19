@@ -1,9 +1,11 @@
-name: Verify Jettons
+ name: Verify Jettons
 
-   on:
-     push:
-       branches: [ main, "*" ] # Запуск на пуш в main и любые другие ветки
-
+ on:
+   push:
+     branches:
+       - main
+       - feature/*
+      
    jobs:
      verify:
        runs-on: ubuntu-latest
