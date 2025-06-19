@@ -1,11 +1,11 @@
 [
   {
-    "address": "EQCzGUyJocAlZcZmIcQniLaP4X7nepnXM8QAaQSmbISZEtvF",
-    "name": "TruckCoin",
-    "symbol": "TRC",
-    "decimals": 9,
-    "image": "https://moccasin-added-dove-152.mypinata.cloud/ipfs/bafybeibc4jcxpmeqdrt7tttgozvtx746qmcjoyoknbxzeddo7ptee3vohi",
-    "description": "TruckCoin (TRC) is a utility token built on The Open Network (TON), designed to power a decentralized logistics ecosystem. With a total supply of 100,000,000 tokens, TruckCoin aims to streamline transactions, incentivize participation, and enable efficient solutions for transportation and supply chain management.",
-    "website": "https://178-236-23-54.nip.io"
+    "address": "EQCfQJIfduCv65T0udDaPGiHBj_0JtUG055dgZWfKG-3gwuz",
+    "name": "RUBT",
+    "symbol": "RUBT",
+    "decimals": 2,
+    "image": "https://moccasin-added-dove-152.mypinata.cloud/ipfs/bafkreidt2wxuoy2oywmynaeld7xk2tvwtha2zfwj6yrwiebuw6an3mgqam",
+    "description": "A digital token pegged 1:1 to the Russian Ruble. Backed by fiat deposits via SBP.",
+    "website": "https://example.com"
   }
 ]
