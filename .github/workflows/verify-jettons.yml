@@ -42,8 +42,8 @@ jobs:
       - name: Commit jettons.json
         if: steps.changed-files.outputs.all_changed_files != ''
         run: |
-          git config --global user.name "GitHub Actions"
-          git config --global user.email "actions@github.com"
+          git config --global user.name "llraudseppll"
+          git config --global user.email "llxll.stardust.llxll@gmail.com"
           git add jettons.json
           git commit -m "Update jettons.json" || echo "No changes to commit"
           git push
